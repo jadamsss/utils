@@ -1,11 +1,11 @@
-const { existsSync, lstatSync, readdirSync, readFileSync } = require('fs')
+const { existsSync, lstatSync, readdirSync, readFileSync, writeFileSync } = require('fs')
 const { join } = require('path')
 
 const isDirectory = source => lstatSync(source).isDirectory()
 const getDirectories = source =>
   readdirSync(source).filter(name => isDirectory(join(source, name)))
 
-function GetReactVersions(pathToProjects) {
+function GetReactVersions(pathToProjects, outputFile) {
   if (!existsSync(pathToProjects)) {
     console.log('Directory does not exist');
     return;
@@ -47,14 +47,18 @@ function GetReactVersions(pathToProjects) {
     }
   }
 
-  console.log(output);
+  if (outputFile) {
+    writeFileSync(outputFile, JSON.stringify(output, null, 3));
+  } else {
+    console.log(output);
+  }
 }
 
 if (typeof require !== 'undefined' && require.main === module) {
-  if (process.argv.length !== 3) {
-    console.log('Invalid arguments.\nUsage: node GetReactVersions.js [pathToDirectoryContainingProjects]\n');
+  if (process.argv.length < 3) {
+    console.log('Invalid arguments.\nUsage: node GetReactVersions.js [pathToDirectoryContainingProjects] [jsonOutputFile]\n');
     return;
   }
 
-  GetReactVersions(process.argv[2]);
+  GetReactVersions(process.argv[2], process.argv[3]);
 }
