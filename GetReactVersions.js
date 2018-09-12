@@ -15,6 +15,7 @@ function GetReactVersions(pathToProjects, outputFile) {
 
   const output = {
     "N/A": [],
+    "Unknown": [],
   };
   
   for (const directory of directories) {
@@ -32,7 +33,12 @@ function GetReactVersions(pathToProjects, outputFile) {
     }
   
     const subVersions = version.replace(/\^|~/g, "").split('.');
-  
+
+    if (subVersions.length === 0) {
+      output['Unknown'].push(directory);
+      continue;
+    }
+
     for (const sub of subVersions) {
       const v = parseInt(sub);
   
