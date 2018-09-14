@@ -31,20 +31,11 @@ function GetReactVersions(packageName, pathToProjects, outputFile) {
       continue;
     }
   
-    const subVersions = version.replace(/\^|~/g, "").split('.');
-  
-    for (const sub of subVersions) {
-      const v = parseInt(sub);
-  
-      if (v > 0) {
-        if (!Object.keys(output).includes(String(v))) {
-          output[v] = [];
-        }
-  
-        output[v].push(directory);
-        break;
-      }
+    if (!output[version]) {
+      output[version] = [];
     }
+
+    output[version].push(directory);
   }
 
   if (outputFile) {
